@@ -78,5 +78,21 @@ class Reviewers(AgentCase):
         self.assertHas("internal consistency")
 
 
+class Approver(AgentCase):
+    agent = "approver"
+
+    def test_headings(self):
+        self.assertHeadings()
+
+    def test_verdicts_and_routes(self):
+        self.assertHas("APPROVE", "ESCALATE", "Route:", "Daedalus", "Hypatia", "Anaximander")
+
+    def test_ships_on_the_pr(self):
+        self.assertHas("Status: shipped", "## History")
+
+    def test_never_merges(self):
+        self.assertHas("never merge")
+
+
 if __name__ == "__main__":
     unittest.main()

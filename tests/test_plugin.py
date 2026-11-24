@@ -11,7 +11,6 @@ class PluginManifest(unittest.TestCase):
         self.assertTrue(manifest.get("version"))
         self.assertTrue(manifest.get("description"))
 
-    @unittest.expectedFailure
     def test_agent_models(self):
         for name, model in AGENT_MODELS.items():
             with self.subTest(agent=name):

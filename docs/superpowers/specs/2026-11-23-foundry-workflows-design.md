@@ -67,8 +67,8 @@ It works in two starting states:
 
 | Hero | Agent file | Model | Role |
 |---|---|---|---|
-| Anaximander, High Sage | `designer.md` | Opus | Product designer: interviews owner, owns the roadmap |
-| Lady Hypatia | `spec-writer.md` | Opus | Technical designer: spec, architecture decisions, task plan |
+| Anaximander, High Sage | `skills/wise-counsel/SKILL.md` | Session (Opus) | Product designer: interviews owner, owns the roadmap |
+| Lady Hypatia | `skills/start-milestone/SKILL.md` | Session (Opus) | Technical designer: spec, architecture decisions, task plan |
 | Daedalus, Master Craftsman | `builder.md` | Opus | Builds the milestone, opens the PR, writes `build.md` |
 | Momus, the Faultfinder | `reviewer-code.md` | Routed (Sonnet / Opus) | Correctness, simplicity, tests, definitions-of-done coverage |
 | Atropos, the Inflexible | `reviewer-security.md` | Opus | Security review; only when `security` flagged |
@@ -300,6 +300,14 @@ These were settled during write-up, not in conversation:
   PR continues or is closed.
 - **No CI yet (greenfield).** If the repo has no CI, Hypatia's spec includes
   a task to add it; until it exists, the readiness gate is local checks only.
+
+- **Anaximander and Hypatia are skills, not subagents,** because subagents
+  cannot talk to the owner (confirmed in
+  `docs/superpowers/notes/2026-11-23-subagent-escalation.md`). The other six
+  heroes are subagents in `agents/`, dispatched as `foundry:<name>`.
+- **Reviews are posted as `COMMENT` reviews with the verdict in the body,**
+  because GitHub won't let an account approve or request changes on its own
+  PR and every agent uses the owner's `gh` account.
 
 ## 10. Left to the builder
 

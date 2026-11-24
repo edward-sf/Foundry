@@ -21,13 +21,14 @@ The plugin:
 
 ```
 .claude-plugin/plugin.json
-commands/
-  wise-counsel.md             → Anaximander
-  start-milestone.md          → Hypatia, then the factory
-skills/factory/SKILL.md       the orchestrator: sequencing, review routing, escalation, resume
-agents/
-  designer.md                 opus      product design interview, owns the roadmap
-  spec-writer.md              opus      technical design, architecture decisions, task plan
+skills/                                 run in your session, so they can talk to you
+  wise-counsel/SKILL.md       Anaximander: product design interview, owns the roadmap
+  start-milestone/SKILL.md    Hypatia: technical design, architecture decisions, task plan
+  factory/
+    SKILL.md                  the orchestrator: sequencing, review routing, escalation, resume
+    contract.md               shared names and formats every hero uses
+    templates/                roadmap, milestone, spec, build log
+agents/                                 run unattended, dispatched by the factory
   builder.md                  opus      code, commits, the PR, build.md
   reviewer-code.md            routed    correctness, simplicity, tests, definitions of done
   reviewer-security.md        opus      only when `security` is flagged
@@ -50,8 +51,8 @@ docs/
 
 | Name | Agent | Role |
 | ---- | ----- | ---- |
-| Anaximander, High Sage (`designer.md`) | Opus | Product designer. Interviews you about a new product or feature and writes the roadmap and its milestones. On later visits, revises the roadmap in light of what was actually built. Shipped milestones are history; he never rewrites them. |
-| Lady Hypatia (`spec-writer.md`) | Opus | Technical designer. Turns one milestone into a spec: technical design, architecture decisions, a task-by-task plan, and precise definitions of done. Asks you about every real architecture choice. You approve her spec before anything is built. |
+| Anaximander, High Sage (`skills/wise-counsel`) | Session model (use Opus) | Product designer. Interviews you about a new product or feature and writes the roadmap and its milestones. On later visits, revises the roadmap in light of what was actually built. Shipped milestones are history; he never rewrites them. |
+| Lady Hypatia (`skills/start-milestone`) | Session model (use Opus) | Technical designer. Turns one milestone into a spec: technical design, architecture decisions, a task-by-task plan, and precise definitions of done. Asks you about every real architecture choice. You approve her spec before anything is built. |
 | Daedalus, Master Craftsman (`builder.md`) | Opus | Builder. Works through the plan unattended, one PR per milestone, and keeps `build.md`. Small surprises he decides and records; architecture-level ones he brings to you. The PR leaves draft only when every done-check and CI pass. |
 | Momus, the Faultfinder (`reviewer-code.md`) | Sonnet, or Opus for large, core or flagged PRs | Correctness, simplicity, tests, and whether every definition of done is covered. Reviews every PR. |
 | Atropos, the Inflexible (`reviewer-security.md`) | Opus | Security. Only when the milestone is flagged `security`. |

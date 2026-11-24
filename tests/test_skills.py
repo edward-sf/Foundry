@@ -69,35 +69,56 @@ class WiseCounsel(SkillCase):
 class StartMilestone(SkillCase):
     skill = "start-milestone"
 
+    def section(self, heading):
+        text = self.text()
+        body = text[text.index(heading) + len(heading):]
+        return body[:body.find("\n## ")] if "\n## " in body else body
+
     def test_headings(self):
         self.assertHeadings()
 
-    def test_artifacts(self):
-        self.assertHas("in-progress", "docs/specs/", "Approved:", "foundry/NN-<slug>")
+    def test_reads_github_milestone(self):
+        self.assertHas("NN · <name>", "lowest-numbered open Milestone", "Reconcile")
 
-    def test_hands_to_factory(self):
-        self.assertHas("factory")
+    def test_branch_and_spec(self):
+        self.assertHas("foundry/NN-<slug>", "docs/specs/", "Approved:", "factory")
 
     def test_single_slot(self):
-        self.assertHas("another milestone is in-progress", "resume", "abandon")
+        self.assertHas("in flight", "resume", "abandon", "abandoned-<date>")
 
     def test_missing_fields_stop(self):
         self.assertHas("missing fields")
 
-    def test_no_ci_adds_task(self):
-        self.assertHas("no CI")
+    def test_no_brief_sends_to_anaximander(self):
+        self.assertHas("no `docs/product.md`", "/foundry:wise-counsel")
+
+    def test_open_docs_pr_merged_first(self):
+        self.assertHas("docs PR", "merge it first")
+
+    def test_foundation_pass(self):
+        self.assertHas("## Foundation pass", "docs/architecture.md", "templates/architecture.md",
+                       "Product constraints", "Decided by: owner", "confirm", "CD")
+
+    def test_foundation_never_decided_by_hypatia(self):
+        self.assertNotIn("decided by: hypatia", " ".join(self.section("## Foundation pass").split()).lower())
+
+    def test_spec_content(self):
+        self.assertHas("## Experiences", "Failure moment", "Run:")
+
+    def test_task_issues(self):
+        self.assertHas("NN.T · <task>", "templates/github/task-issue.md", "after the owner approves")
+
+    def test_follow_ups(self):
+        self.assertHas("foundry:follow-up", "attached")
 
     def test_flags_never_removed(self):
         self.assertHas("never remove")
 
-    def test_sends_back_to_anaximander(self):
-        self.assertHas("/foundry:wise-counsel")
-
-    def test_reconciles_shipped_mirrors(self):
-        self.assertHas("Reconcile mirrors")
-
     def test_asks_owner_on_architecture(self):
         self.assertHas("architecture threshold", "ask the owner")
+
+    def test_no_rev1_terms(self):
+        assert_no_rev1(self, self.text(), self.skill)
 
 
 class Factory(SkillCase):

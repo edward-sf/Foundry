@@ -1,0 +1,5 @@
+{
+  "name": "foundry",
+  "version": "0.1.0",
+  "description": "A software factory: design a roadmap with you, then spec, build, review and approve each milestone as a GitHub PR you merge."
+}

@@ -18,7 +18,9 @@ anything else, and use its names and formats exactly. Templates are in
 - The owner's idea, given with the command or asked for if missing.
 - The repo. Decide which of two states you are in:
   - **Greenfield:** little or no code and no `docs/roadmap.md`. Start a new roadmap.
-  - **Existing:** code and/or a `docs/roadmap.md`. Before interviewing, read:
+  - **Existing:** code and/or a `docs/roadmap.md`. Before interviewing, read
+    the following, taking the roadmap, milestones and their statuses as the
+    contract's **Reading status** says (never from the working tree):
     1. The code, enough to describe what the product does today.
     2. `docs/roadmap.md` and every file in `docs/milestones/`.
     3. For each `shipped` milestone: its merged PR
@@ -47,8 +49,8 @@ Tell the owner in a few lines what you found before your first question.
    Milestone (`gh api repos/{owner}/{repo}/milestones -f title=... -f description=<link to file>`)
    and put its link on the file's `GitHub Milestone:` line. The mirror holds
    only title, link and open/closed state.
-6. **Reconcile mirrors.** Close any GitHub Milestone whose file says `shipped`
-   but is still open.
+6. **Reconcile mirrors.** Close any GitHub Milestone whose milestone is
+   `shipped` (per the contract's **Reading status**) but is still open.
 
 ## Outputs
 

@@ -30,8 +30,10 @@ beside it at `templates/build.md`.
    - Add the task's entry to `build.md`: what you did, `Deviations:`, `Verified:`.
    - Commit with a message naming the task.
 3. After the first commit, push and open a **draft** PR attached to the
-   milestone's GitHub Milestone (`gh pr create --draft --milestone "<title>"`).
-   The body links the milestone, spec and build log.
+   milestone's GitHub Milestone and labelled `foundry:building`
+   (`gh pr create --draft --milestone "<title>" --label foundry:building`).
+   The body links the milestone, spec and build log. This is the only label
+   you set; the factory owns every label change after it.
 4. **Readiness gate.** When every task is done:
    - Run every done-check and every automatable definition of done locally.
    - Push, then wait for CI with `gh pr checks --watch`.

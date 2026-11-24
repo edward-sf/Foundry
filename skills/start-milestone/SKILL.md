@@ -21,11 +21,15 @@ anything else, and use its names and formats exactly. The spec template is
 
 ## Before you start
 
-0. **Reconcile mirrors.** Close any GitHub Milestone whose file says
+Read every milestone's status as the contract's **Reading status** says: from
+the default branch and the milestone branches, never from the working tree.
+
+0. **Reconcile mirrors.** Close any GitHub Milestone whose milestone is
    `shipped` but is still open (the owner merged since the last run).
-1. **Single slot.** Look for any milestone with `Status: in-progress`.
+1. **Single slot.** Look for any milestone that is `in-progress`.
    - If it is the milestone you were given (or no argument was given): this is
-     a **resume**. If its spec has an `Approved:` date, hand straight to the
+     a **resume**. Check out its branch `foundry/NN-<slug>` and read its spec
+     there. If the spec has an `Approved:` date, hand straight to the
      `factory` skill in resume mode. If not, continue the spec where it stands.
    - If another milestone is in-progress: refuse to start. Tell the owner
      which one, and offer to **resume** it or **abandon** it. Abandon means,

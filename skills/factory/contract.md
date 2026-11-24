@@ -28,6 +28,24 @@ Files are the source of truth. Where a file and a GitHub object disagree, the fi
 - `in-progress`: Hypatia has started it. At most one milestone is `in-progress` at a time.
 - `shipped`: merged. Shipped milestones are history and are never edited.
 
+### Reading status
+
+Status changes are committed on the milestone branch and reach the default
+branch only when the owner merges. So the working tree can be ahead of what has
+really happened (Homer writes `shipped` before the merge). Never read status
+from the working tree. Run `git fetch` first, then a milestone's status is:
+
+- `shipped` if its file on the default branch
+  (`git show origin/<default>:docs/milestones/NN-<slug>.md`) says `shipped`;
+- `in-progress` if not, and its branch `foundry/NN-<slug>` exists locally or
+  on `origin`, its file on that branch says `in-progress` or `shipped`, and the
+  branch has no merged PR (`gh pr list --head foundry/NN-<slug> --state merged`
+  is empty);
+- `planned` otherwise. An abandoned milestone's branch says `planned`, so it
+  is `planned`.
+
+Read the roadmap and milestone list from the default branch the same way.
+
 The GitHub Milestone mirror holds only the title, a link to the file, and
 open/closed state (open unless `shipped`). It never holds a copy of the content.
 
@@ -103,6 +121,15 @@ Recommendation: <A|B|…> — <why>
 
 Homer's escalation adds a `Route: Daedalus|Hypatia|Anaximander` line.
 Agents never ask the owner directly; the orchestrator relays.
+
+## Running commands
+
+Run each outward-facing action as its own shell command: every `gh` call that
+writes (comment, review, label, PR or milestone change), every `git commit`,
+and every `git push`. Never chain them with each other or with file edits
+(`&&`, `;`, heredoc scripts). Make file edits with the edit tools, not inside
+the same command. Each action then stands alone for the owner's permission
+checks, and a refusal stops only that one step.
 
 ## Never
 

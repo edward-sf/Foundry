@@ -42,12 +42,17 @@ the new one. Before the PR exists, the stage is tracked in the build log.
 1. **`foundry:building`.** Dispatch `foundry:builder` (Agent tool,
    `subagent_type: "foundry:builder"`) in build mode with the spec path,
    branch and contract path. It returns `READY <pr-number>` or an escalation
-   block. Once a PR exists, label it `foundry:building`.
+   block. Daedalus labels the PR `foundry:building` when he opens it; if it
+   carries no `foundry:` label when he returns, add `foundry:building` before
+   moving on.
 2. **`foundry:review-r1`.** Pick the reviewers:
    - Always `foundry:reviewer-code` (Momus). Route his model: pass
      `model: "opus"` if the PR changes more than 400 lines or 15 files, touches
      code the spec's technical design calls shared or core, or the milestone
      has any flag set; otherwise use his default, sonnet. Never haiku.
+     When counting lines and files, leave out Foundry's own files
+     (`docs/roadmap.md`, `docs/milestones/`, `docs/specs/`, `docs/builds/`);
+     count everything else, including the project's other docs.
    - `foundry:reviewer-security` if `security: yes`.
    - `foundry:reviewer-ux` and `foundry:reviewer-ui` if `ui: yes`. Start one
      instance of the app first, using the run instructions in the spec's
@@ -103,8 +108,9 @@ When started on a milestone already in progress, the factory reads the label on
 the milestone's PR (`gh pr list --head <branch> --json number,labels`), the
 build log, and the PR's reviews and comments, then continues at that stage:
 
-- No PR, or `foundry:building`: dispatch Daedalus in build mode; he picks up
-  from the first unfinished task in the build log.
+- No PR, a draft PR with no `foundry:` label, or `foundry:building`: label it
+  `foundry:building` if a PR exists, then dispatch Daedalus in build mode; he
+  picks up from the first unfinished task in the build log.
 - `foundry:review-rN`: re-run round N for every reviewer whose round-N review
   is missing from the PR; keep the verdicts already posted.
 - `foundry:awaiting-homer`: dispatch Homer.

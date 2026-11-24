@@ -1,6 +1,6 @@
 import unittest
 
-from contract import LABELS, SKILL_HEADINGS, read
+from contract import FOLLOWUP_LABELS, LABELS, SKILL_HEADINGS, assert_no_rev1, read
 
 
 class SkillCase(unittest.TestCase):
@@ -28,20 +28,39 @@ class WiseCounsel(SkillCase):
     def test_headings(self):
         self.assertHeadings()
 
-    def test_artifacts(self):
-        self.assertHas("docs/roadmap.md", "docs/milestones/", "planned", "shipped", "gh ")
+    def test_brief(self):
+        self.assertHas("docs/product.md", "templates/product.md", "Core experiences",
+                       "Failure moments", "Product constraints", "Decision log")
 
-    def test_shipped_milestones_never_edited(self):
+    def test_experiences_before_milestones(self):
+        self.assertHas("before proposing any milestone")
+
+    def test_github_milestones(self):
+        self.assertHas("NN · <name>", "templates/github/milestone.md", "Serves")
+
+    def test_triage(self):
+        self.assertHas("foundry:follow-up", "Triage", "won't fix")
+
+    def test_reconcile(self):
+        self.assertHas("Reconcile")
+
+    def test_closed_milestones_never_edited(self):
         self.assertHas("never edit")
 
     def test_owner_approves_before_writing(self):
         self.assertHas("owner approves")
 
-    def test_docs_pr_when_no_build(self):
-        self.assertHas("foundry/roadmap-", "docs PR")
+    def test_in_flight_exception(self):
+        self.assertHas("in flight", "Route: Anaximander")
 
-    def test_reads_what_was_built(self):
-        self.assertHas("docs/builds/", "merged")
+    def test_docs_pr(self):
+        self.assertHas("templates/github/docs-pr.md", "foundry/brief-")
+
+    def test_migration(self):
+        self.assertHas("migrate", "<!-- migration -->")
+
+    def test_no_rev1_terms(self):
+        assert_no_rev1(self, self.text(), self.skill)
 
     def test_handoff(self):
         self.assertHas("/foundry:start-milestone")

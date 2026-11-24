@@ -157,6 +157,27 @@ class Factory(SkillCase):
     def test_passes_contract_path(self):
         self.assertHas("contract.md")
 
+    def test_preflight_creates_follow_up_labels(self):
+        self.assertHas(*FOLLOWUP_LABELS)
+
+    def test_polish_pass(self):
+        self.assertHas("Polish pass", "not counted", "no open nits")
+
+    def test_polish_blocking_after_round_3_escalates(self):
+        self.assertHas("after round 3")
+
+    def test_reconcile_and_in_flight(self):
+        self.assertHas("Reconcile", "in flight")
+
+    def test_escalation_template(self):
+        self.assertHas("templates/github/escalation.md")
+
+    def test_never_tags(self):
+        self.assertHas("never tag")
+
+    def test_no_rev1_terms(self):
+        assert_no_rev1(self, self.text(), self.skill)
+
 
 if __name__ == "__main__":
     unittest.main()

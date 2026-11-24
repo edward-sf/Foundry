@@ -116,8 +116,23 @@ class Approver(AgentCase):
     def test_verdicts_and_routes(self):
         self.assertHas("APPROVE", "ESCALATE", "Route:", "Daedalus", "Hypatia", "Anaximander")
 
-    def test_ships_on_the_pr(self):
-        self.assertHas("Status: shipped", "## History")
+    def test_templates(self):
+        self.assertHas("templates/github/approval.md", "templates/github/escalation.md",
+                       "templates/github/follow-up-issue.md")
+
+    def test_follow_ups(self):
+        self.assertHas("foundry:follow-up", "## Found", "duplicate", "only on APPROVE")
+
+    def test_checks(self):
+        self.assertHas("no nit left open", "Serves", "docs/architecture.md", "Failure moment")
+
+    def test_ci_on_head(self):
+        self.assertHas("gh pr checks")
+
+    def test_no_shipping_commit(self):
+        self.assertLacks("as shipped", "Record <milestone>")
+        self.assertHas("never commit")
+        assert_no_rev1(self, read("agents/approver.md"), "approver")
 
     def test_never_merges(self):
         self.assertHas("never merge")

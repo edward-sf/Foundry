@@ -17,10 +17,12 @@ needs; agents know nothing else about this run.
 ## Inputs
 
 - **Fresh run:** the approved spec's path (from Hypatia).
-- **Resume:** the milestone's path, when its spec is already approved.
+- **Resume:** the milestone number `NN`, when its spec is already approved.
 
-From the spec, read the milestone path and `## Flags`. Derive the build log
-path and branch name from the contract.
+From the spec, read the GitHub Milestone (`NN · <name>`) and `## Flags`.
+Derive the build log path and branch name from the contract. Paths you pass
+to agents include the spec, the build log, `docs/product.md`,
+`docs/architecture.md` and the contract.
 
 ## Preflight
 
@@ -31,8 +33,14 @@ Stop before dispatching anything, and tell the owner exactly how to fix it, if:
 - the current branch is not the milestone branch `foundry/NN-<slug>`;
 - the spec has no `Approved:` date.
 
-Then create the labels if missing: `gh label create <label> --force` for each
-label in the contract.
+Then create the labels only if missing: list them with
+`gh label list --json name`, and run `gh label create <label>` for each stage
+label in the contract and each follow-up label (`foundry:follow-up`, `bug`,
+`robustness`, `out-of-scope`) not already there. Never overwrite a label the
+repo already has; `bug` often exists.
+
+Then **Reconcile:** close any open Milestone whose PR has merged (the
+contract's rule). The milestone you are running must be the one in flight.
 
 ## Stages
 
@@ -42,21 +50,31 @@ the new one. Before the PR exists, the stage is tracked in the build log.
 1. **`foundry:building`.** Dispatch `foundry:builder` (Agent tool,
    `subagent_type: "foundry:builder"`) in build mode with the spec path,
    branch and contract path. It returns `READY <pr-number>` or an escalation
-   block. Once a PR exists, label it `foundry:building`.
+   block. Daedalus labels the PR `foundry:building` when he opens it; if it
+   carries no `foundry:` label when he returns, add `foundry:building` before
+   moving on.
 2. **`foundry:review-r1`.** Pick the reviewers:
    - Always `foundry:reviewer-code` (Momus). Route his model: pass
      `model: "opus"` if the PR changes more than 400 lines or 15 files, touches
      code the spec's technical design calls shared or core, or the milestone
      has any flag set; otherwise use his default, sonnet. Never haiku.
+     When counting lines and files, leave out Foundry's own files
+     (`docs/product.md`, `docs/architecture.md`, `docs/specs/`, `docs/builds/`);
+     count everything else, including the project's other docs.
    - `foundry:reviewer-security` if `security: yes`.
-   - `foundry:reviewer-ux` and `foundry:reviewer-ui` if `ui: yes`. Start one
-     instance of the app first, using the run instructions in the spec's
-     `## Design reference`, and pass its URL to both. Stop it after the round.
+   - `foundry:reviewer-ux` and `foundry:reviewer-ui` if `ui: yes`. Read the
+     `Run:` line in the spec's `## Design reference`:
+     - `server:` start one instance with its command first, and pass its URL
+       to both. Stop it after the round.
+     - `local:` start nothing; pass the commands to both, and tell them to
+       run the app themselves in a temporary sandbox (for example a
+       `mktemp -d` directory for any data it writes), never against real
+       user data.
 
    Dispatch them all **in parallel** (one message, several Agent calls), each
-   with the PR number, spec path, round number, and contract path.
+   with the PR number, the paths above, and the round number.
 3. **Collect verdicts.** Each reply's first line is `PASS` or `CHANGES`.
-   - All `PASS`: go to step 5.
+   - All `PASS`: go to the polish pass (step 5).
    - Any `CHANGES` and this was round 1 or 2: dispatch `foundry:builder` in
      fix mode with the PR number and round number, wait for `READY`, then label
      the next round (`foundry:review-r2`, `foundry:review-r3`) and re-run
@@ -68,8 +86,18 @@ the new one. Before the PR exists, the stage is tracked in the build log.
      revision); the owner takes over the PR.
 4. A blocking finding "checked against: spec" means the spec may be wrong.
    Treat it as an escalation with a recommended route to Hypatia.
-5. **`foundry:awaiting-homer`.** Dispatch `foundry:approver` with the PR
-   number and the milestone, spec, build log and contract paths.
+5. **Polish pass** (not counted toward the 3-round cap). If there are no open
+   nits (every `nit` in every review is recorded with a fix commit in the
+   build log), skip it. Otherwise, keeping the current label:
+   - Dispatch `foundry:builder` in polish mode with the PR number and the open nits.
+   - Dispatch `foundry:reviewer-code` (Momus) to re-check only the polish commits.
+   - A `blocking` finding from that re-check counts as the next review round
+     (step 3). If it comes after round 3, escalate to the owner.
+   - A new `nit` gets one more polish pass. Tell Daedalus it is the last:
+     anything he still can't fix he records as `Converted to follow-up` under
+     `## Polish pass`, and Homer opens it as a follow-up issue.
+6. **`foundry:awaiting-homer`.** Dispatch `foundry:approver` with the PR
+   number, the Milestone, and the paths above.
    - `APPROVE`: label `foundry:ready-to-merge` and hand back.
    - `ESCALATE`: escalate to the owner with Homer's `Route:` as the recommendation.
 
@@ -78,8 +106,9 @@ the new one. Before the PR exists, the stage is tracked in the build log.
 When an agent ends with the contract's escalation block, or you reach a
 stop above:
 
-1. Post the question on the PR as a comment (Question, Options,
-   Recommendation, and the stage to return to) and set `foundry:escalated`.
+1. Post the question on the PR as a comment in
+   `templates/github/escalation.md` format (it names the stage to return to)
+   and set `foundry:escalated`. Homer posts his own; don't post it twice.
    This is the durable record if the session closes.
 2. Send a `PushNotification` saying the run is waiting on the owner.
 3. Ask the owner in-session with AskUserQuestion, using the agent's options.
@@ -99,14 +128,23 @@ stop above:
 
 ## Resume
 
-When started on a milestone already in progress, the factory reads the label on
+When started on the milestone in flight, the factory reads the label on
 the milestone's PR (`gh pr list --head <branch> --json number,labels`), the
 build log, and the PR's reviews and comments, then continues at that stage:
 
-- No PR, or `foundry:building`: dispatch Daedalus in build mode; he picks up
-  from the first unfinished task in the build log.
-- `foundry:review-rN`: re-run round N for every reviewer whose round-N review
-  is missing from the PR; keep the verdicts already posted.
+- No PR, a draft PR with no `foundry:` label, or `foundry:building`: label it
+  `foundry:building` if a PR exists, then dispatch Daedalus in build mode; he
+  picks up from the first unfinished task in the build log.
+- `foundry:review-rN`: work out who is expected in round N: in round 1,
+  every reviewer the flags select; in a later round, Momus plus every reviewer
+  whose round N−1 verdict was `CHANGES`. Then:
+  - Some expected round-N reviews missing: run only those reviewers; keep
+    the verdicts already posted.
+  - All posted and any `CHANGES`: the crash was during fix mode. Dispatch
+    Daedalus in fix mode for round N, then continue at step 3.
+  - All posted and all `PASS`: run the polish pass. A `round N · polish`
+    review from Momus means the polish pass already ran; go to Homer if it
+    passed.
 - `foundry:awaiting-homer`: dispatch Homer.
 - `foundry:escalated`: re-ask the owner the question in the latest escalation
   comment, then continue at the stage it names.
@@ -119,11 +157,11 @@ build log, and the PR's reviews and comments, then continues at that stage:
 
 ## Rules
 
-- Never merge a PR. The owner always merges.
+- Never merge a PR. The owner always merges. Never tag or publish a release.
 - Never write code, edit the spec, or judge a finding. Dispatch, label, relay.
 - One milestone at a time. Only reviewers run in parallel.
-- Everything you need to continue must be on disk or on the PR. Never rely
-  on remembering earlier turns.
+- Everything you need to continue must be in repo files or on GitHub. Never
+  rely on remembering earlier turns.
 
 ## Handoff
 
@@ -131,6 +169,7 @@ Tell the owner, in a few lines, where the run ended:
 
 - **Ready to merge:** link the PR and Homer's report. After they merge,
   the next `/foundry:wise-counsel` or `/foundry:start-milestone` closes the
-  GitHub Milestone.
+  GitHub Milestone. Mention the follow-up issues Homer opened; the owner
+  triages them with Anaximander.
 - **Escalated:** what is needed from them, and how to resume
   (`/foundry:start-milestone`).

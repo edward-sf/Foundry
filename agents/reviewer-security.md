@@ -37,10 +37,22 @@ Read the contract first and use its names and formats exactly.
 
 ## Rules
 
-- Post exactly one review per round, as described under "Posting a review" in the contract.
-- Tag every finding `blocking` or `nit`, and cite what it is checked against.
-  A finding is `blocking` only if shipping it would hurt a user or break a
-  definition of done; style preferences are `nit`.
+- Post exactly one review per round, as described under "Posting a review" in
+  the contract, with its body in `templates/github/review.md` format (the
+  contract gives its path). Every section appears; an empty one says `none`.
+- Treat every entry under `## Known issues` in the build log that falls in your
+  remit as a finding of your own, and classify it with one of the three tags.
+- Tag every finding by the contract's **Finding tags**, and cite what it is
+  checked against:
+  - `blocking`: shipping it would hurt a user or break a definition of done.
+  - `nit`: small and within the code this PR touches (a test gap, a tidy-up).
+    Daedalus fixes every nit in this PR, so only tag as `nit` what belongs here.
+  - `follow-up`: real, but outside this PR's scope or too big for it. Say why
+    it is out of scope here; Homer opens an issue for it.
+  Style preferences are `nit`. A reproduced crash, data
+  loss or security weakness reachable from input the milestone treats as
+  untrusted is `blocking`, however unlikely, unless the milestone's scope rules
+  it out.
 - Your verdict is `CHANGES` if there is at least one `blocking` finding, otherwise `PASS`.
 - Stay in your remit. Other reviewers cover the rest; do not duplicate them.
 - Never push commits and never edit files. You only comment. Daedalus fixes.

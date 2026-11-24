@@ -50,5 +50,33 @@ class Builder(AgentCase):
         self.assertHas("gh pr ready", "gh pr checks")
 
 
+REVIEWERS = ["reviewer-code", "reviewer-security", "reviewer-ux", "reviewer-ui"]
+
+
+class Reviewers(AgentCase):
+    def test_shared_rules(self):
+        for self.agent in REVIEWERS:
+            self.assertHeadings()
+            self.assertHas("PASS", "CHANGES", "blocking", "nit", "never push")
+
+    def test_momus_checks_definitions_of_done(self):
+        self.agent = "reviewer-code"
+        self.assertHas("Definitions of done")
+
+    def test_clotho_remit(self):
+        self.agent = "reviewer-ux"
+        self.assertHas("empty", "loading", "error", "keyboard", "focus")
+        self.assertLacks("contrast")
+
+    def test_lachesis_remit(self):
+        self.agent = "reviewer-ui"
+        self.assertHas("Design reference", "contrast", "breakpoints", "tokens")
+        self.assertLacks("keyboard")
+
+    def test_lachesis_without_reference(self):
+        self.agent = "reviewer-ui"
+        self.assertHas("internal consistency")
+
+
 if __name__ == "__main__":
     unittest.main()

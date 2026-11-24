@@ -59,6 +59,28 @@ the stage label while waiting, and the escalation comment names the stage to ret
 - Homer returns `APPROVE` or `ESCALATE`.
 - Daedalus returns `READY <pr-number>` or an escalation block.
 
+## Posting a review
+
+Every agent acts through the owner's `gh` account, and GitHub does not let an
+account approve or request changes on its own PR. So every review is posted
+with event `COMMENT`, and the verdict lives in the body:
+
+```
+gh api repos/{owner}/{repo}/pulls/<pr>/reviews \
+  -f event=COMMENT -f body="<body>" \
+  -F 'comments[][path]=<file>' -F 'comments[][line]=<n>' -F 'comments[][body]=<finding>'
+```
+
+Body format:
+
+```
+<PASS|CHANGES> — <Reviewer name>, round <N>
+
+- [blocking|nit] <finding> (checked against: <DoD ACn | spec section | remit>)
+```
+
+The reviewer's final reply to the orchestrator repeats the verdict on its first line.
+
 ## Architecture threshold
 
 A choice is "real" (the owner decides) if it adds a dependency or service,

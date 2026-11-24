@@ -15,6 +15,12 @@ class SkillCase(unittest.TestCase):
             with self.subTest(needle=needle):
                 self.assertIn(needle.lower(), lower)
 
+    def assertLacks(self, *needles):
+        lower = " ".join(self.text().split()).lower()
+        for needle in needles:
+            with self.subTest(needle=needle):
+                self.assertNotIn(needle.lower(), lower)
+
     def assertHeadings(self):
         text = self.text()
         for heading in SKILL_HEADINGS:
@@ -120,6 +126,16 @@ class StartMilestone(SkillCase):
     def test_no_rev1_terms(self):
         assert_no_rev1(self, self.text(), self.skill)
 
+    def test_resume_check_before_brief_check(self):
+        text = self.text()
+        self.assertLess(text.index("**Single slot.**"), text.index("**Brief.**"))
+
+    def test_abandon_detaches_follow_ups(self):
+        self.assertHas("detach", "never close a follow-up")
+
+    def test_task_issues_not_duplicated(self):
+        self.assertHas("already exists")
+
 
 class Factory(SkillCase):
     skill = "factory"
@@ -171,6 +187,16 @@ class Factory(SkillCase):
 
     def test_escalation_template(self):
         self.assertHas("templates/github/escalation.md")
+
+    def test_resume_expected_reviewers(self):
+        self.assertHas("expected in round N", "all posted and any `CHANGES`")
+
+    def test_polish_converted_nits(self):
+        self.assertHas("Converted to follow-up")
+
+    def test_labels_not_overwritten(self):
+        self.assertLacks("--force")
+        self.assertHas("only if missing")
 
     def test_never_tags(self):
         self.assertHas("never tag")

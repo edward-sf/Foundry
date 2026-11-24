@@ -39,8 +39,9 @@ merge from without reading anything else.
 4. **Review record.** No `blocking` finding was dismissed without a fix or a
    stated reason.
 5. **No nit left open.** Every `nit` in every review appears in the build
-   log's review-round or `## Polish pass` sections with its fix commit. An
-   unfixed nit is an ESCALATE (`Route: Daedalus`).
+   log's review-round or `## Polish pass` sections, either with its fix commit
+   or as a `Converted to follow-up` line with a reason. A nit with neither is
+   an ESCALATE (`Route: Daedalus`).
 6. **Known issues.** Every entry under the build log's `## Known issues` was
    either fixed or classified by a reviewer. One still open that meets the
    blocking rule (a reproduced crash, data loss or security weakness on
@@ -53,18 +54,22 @@ merge from without reading anything else.
 **APPROVE** (all checks pass):
 
 1. **Collect follow-ups.** Gather every `follow-up` finding from every review,
-   every round, and every known issue a reviewer classified as `follow-up`.
+   every round, every known issue a reviewer classified as `follow-up`, and
+   every `Converted to follow-up` line in the build log.
    Merge duplicates: findings about the same problem in the same place are one
    follow-up, with every reviewer who raised it listed.
-2. **Open them, without duplicating.** First list the issues already opened
-   from this PR (`gh issue list --label foundry:follow-up --state all --search "PR #<pr>"`,
-   matching the `## Found` line). For each follow-up not already open, write
+2. **Open them, without duplicating.** First list every follow-up issue
+   (`gh issue list --label foundry:follow-up --state all --limit 500 --json number,title,body`)
+   and keep those whose `## Found` line names this PR. Filter locally; don't
+   rely on GitHub search, whose index lags behind just-opened issues. For each follow-up not already open, write
    the body in `templates/github/follow-up-issue.md` format to a file outside
    the repo and open it with label `foundry:follow-up` plus one of `bug`,
    `robustness` or `out-of-scope`, and no milestone. Open follow-ups only on
    APPROVE: on ESCALATE the findings stay in the reviews, and a later APPROVE
    collects them.
-3. **Report.** Post a PR comment in `templates/github/approval.md` format,
+3. **Report.** If the PR already has an `APPROVE — Homer` comment for the
+   current head (a resumed run), don't post another. Otherwise post a PR
+   comment in `templates/github/approval.md` format,
    linking every follow-up under `## Follow-ups opened` and the green head sha
    under `## CI`.
 4. Reply `APPROVE`.

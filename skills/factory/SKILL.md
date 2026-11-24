@@ -33,9 +33,11 @@ Stop before dispatching anything, and tell the owner exactly how to fix it, if:
 - the current branch is not the milestone branch `foundry/NN-<slug>`;
 - the spec has no `Approved:` date.
 
-Then create the labels if missing: `gh label create <label> --force` for each
-stage label in the contract and for the follow-up labels `foundry:follow-up`,
-`bug`, `robustness` and `out-of-scope`.
+Then create the labels only if missing: list them with
+`gh label list --json name`, and run `gh label create <label>` for each stage
+label in the contract and each follow-up label (`foundry:follow-up`, `bug`,
+`robustness`, `out-of-scope`) not already there. Never overwrite a label the
+repo already has; `bug` often exists.
 
 Then **Reconcile:** close any open Milestone whose PR has merged (the
 contract's rule). The milestone you are running must be the one in flight.
@@ -91,8 +93,9 @@ the new one. Before the PR exists, the stage is tracked in the build log.
    - Dispatch `foundry:reviewer-code` (Momus) to re-check only the polish commits.
    - A `blocking` finding from that re-check counts as the next review round
      (step 3). If it comes after round 3, escalate to the owner.
-   - A new `nit` gets one more polish pass. Anything still open after that
-     is recorded in the build log as a `follow-up` for Homer.
+   - A new `nit` gets one more polish pass. Tell Daedalus it is the last:
+     anything he still can't fix he records as `Converted to follow-up` under
+     `## Polish pass`, and Homer opens it as a follow-up issue.
 6. **`foundry:awaiting-homer`.** Dispatch `foundry:approver` with the PR
    number, the Milestone, and the paths above.
    - `APPROVE`: label `foundry:ready-to-merge` and hand back.
@@ -132,10 +135,16 @@ build log, and the PR's reviews and comments, then continues at that stage:
 - No PR, a draft PR with no `foundry:` label, or `foundry:building`: label it
   `foundry:building` if a PR exists, then dispatch Daedalus in build mode; he
   picks up from the first unfinished task in the build log.
-- `foundry:review-rN`: re-run round N for every reviewer whose round-N review
-  is missing from the PR; keep the verdicts already posted.
-- All of the latest round's reviews are `PASS` but the label is still a
-  review round: run the polish pass.
+- `foundry:review-rN`: work out who is expected in round N: in round 1,
+  every reviewer the flags select; in a later round, Momus plus every reviewer
+  whose round N−1 verdict was `CHANGES`. Then:
+  - Some expected round-N reviews missing: run only those reviewers; keep
+    the verdicts already posted.
+  - All posted and any `CHANGES`: the crash was during fix mode. Dispatch
+    Daedalus in fix mode for round N, then continue at step 3.
+  - All posted and all `PASS`: run the polish pass. A `round N · polish`
+    review from Momus means the polish pass already ran; go to Homer if it
+    passed.
 - `foundry:awaiting-homer`: dispatch Homer.
 - `foundry:escalated`: re-ask the owner the question in the latest escalation
   comment, then continue at the stage it names.

@@ -29,23 +29,26 @@ anything else, and use its names and formats exactly. Templates are in
 
 1. **Reconcile.** Close any open Milestone whose PR has merged (the contract's
    reconcile rule).
-2. **Brief.** If there is no `docs/product.md` on the default branch or in
-   uncommitted changes Anaximander left you, stop and send the owner to
-   `/foundry:wise-counsel` first. If a docs PR (`foundry/brief-<date>`) is still
-   open, ask the owner to merge it first, so the milestone builds on the brief
-   it was planned against.
-3. **Single slot.** Find the milestone in flight (the contract's rule).
+2. **Single slot.** Find the milestone in flight (the contract's rule).
    - If it is this milestone, or no argument was given: **resume**. Check out
      its branch. If its spec has an `Approved:` date, hand straight to the
      `factory` skill in resume mode; if not, continue the spec where it stands.
    - If another milestone is in flight: refuse to start. Name it, and offer to
      **resume** or **abandon** it. Abandon, after the owner confirms: close its
-     PR without merging, close its task issues as not planned, and rename its
+     PR without merging; close its task issues as not planned, except attached
+     follow-ups: detach those from the milestone and leave them open for the
+     next triage (never close a follow-up on abandon); and rename its
      branch to `foundry/NN-<slug>-abandoned-<date>` (locally and on `origin`).
      If its first commit was a brief change, open a docs PR from that commit.
      The Milestone stays open. A restart is then fresh: new branch, new spec,
      new task issues; the abandoned spec can be read for reference.
      Never run two milestones at once.
+3. **Brief.** (Skipped on a resume: the brief is on the in-flight branch.)
+   If there is no `docs/product.md` on the default branch or in uncommitted
+   changes Anaximander left you, stop and send the owner to
+   `/foundry:wise-counsel` first. If a docs PR (`foundry/brief-<date>`) is still
+   open, ask the owner to merge it first, so the milestone builds on the brief
+   it was planned against.
 4. **Validate the Milestone** against `templates/github/milestone.md`. If
    goals, scope, acceptance criteria, `## Serves` or either flag is missing or
    empty, list the missing fields to the owner and stop. Never invent them;
@@ -100,7 +103,10 @@ cover (a database, a new service, a new platform).
    Make smaller calls yourself and record them with `Decided by: Hypatia`. A
    choice that is project-wide goes through the foundation pass instead.
 5. Show the owner the spec and ask for approval. Revise until they approve.
-6. **Task issues, after the owner approves.** Create one issue per task,
+6. **Task issues, after the owner approves.** Before creating each, check
+   whether an issue with its `NN.T · <task>` title already exists on the
+   milestone (a resumed session may have created some); reuse one that
+   already exists instead of creating it again. Create one issue per task,
    titled `NN.T · <task>`, in `templates/github/task-issue.md` format, on the
    milestone. For an attached follow-up, use the follow-up issue itself as the
    task: set its milestone and add the Build and Done-check as a comment.

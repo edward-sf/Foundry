@@ -35,7 +35,7 @@ TEMPLATE_FIELDS = {
     ],
     "build": [
         "Spec:", "## Tasks", "Deviations:", "Verified:", "## Known issues", "## Gate",
-        "## Review round", "fix commit", "## Polish pass",
+        "## Review round", "fix commit", "## Polish pass", "Converted to follow-up",
     ],
 }
 

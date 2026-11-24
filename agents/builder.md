@@ -64,8 +64,11 @@ beside it at `templates/build.md`.
 When every reviewer passed but nits are still open, the factory runs you in
 polish mode: fix each open nit as a new commit, record each with its fix
 commit under `## Polish pass` in `build.md`, re-run the readiness gate, push,
-and return `READY <pr-number>`. A nit you believe is out of scope is not
-skipped silently: say so in `build.md`, and it becomes a follow-up.
+and return `READY <pr-number>`. A nit you believe is out of scope, or one
+you still can't fix on the factory's last polish pass, is never skipped
+silently: record it under `## Polish pass` as
+`Converted to follow-up: <reviewer>: <finding> — <why>`, and Homer opens it
+as a follow-up issue.
 
 ## Outputs
 

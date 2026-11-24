@@ -3,6 +3,7 @@ Review body, posted as a COMMENT review (see the contract). Every section
 appears; an empty one says "none". -->
 
 <PASS|CHANGES> — <Reviewer name>, round N
+<!-- On a polish re-check, the header is: <PASS|CHANGES> — Momus, round N · polish -->
 
 ## Blocking
 

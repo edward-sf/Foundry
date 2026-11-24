@@ -6,7 +6,7 @@ REQUIRED = {
     "milestone": ["## Goals", "## Scope", "### In", "### Out", "## Acceptance criteria",
                   "## Serves", "## Flags", "security:", "ui:"],
     "pr": ["NN · ", "Milestone:", "Spec:", "Build log:", "Flags:", "## Tasks", "Closes #"],
-    "review": ["round N", "## Blocking", "## Nits (fix in this PR)",
+    "review": ["round N", "round N · polish", "## Blocking", "## Nits (fix in this PR)",
                "## Follow-ups (not this PR)", "## What I checked", "checked against:"],
     "approval": ["APPROVE — Homer", "## What was built", "## Acceptance criteria",
                  "| AC | Check | Result |", "## Deviations", "## Follow-ups opened", "## CI"],

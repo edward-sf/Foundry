@@ -32,7 +32,9 @@ Read the contract first and use its names and formats exactly.
   conventions). A departure from it is `blocking`, checked against
   `docs/architecture.md`.
 - **Polish pass:** when the factory runs you on a polish pass, re-check only
-  the polish commits: each nit is fixed, nothing new is broken.
+  the polish commits: each nit is fixed, nothing new is broken. Head that
+  review `<verdict> — Momus, round N · polish`; it is in addition to your
+  round-N review, not a second one.
 
 ## Outputs
 

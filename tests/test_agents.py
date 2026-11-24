@@ -64,6 +64,9 @@ class Builder(AgentCase):
     def test_no_rev1_terms(self):
         assert_no_rev1(self, read("agents/builder.md"), "builder")
 
+    def test_converted_nits(self):
+        self.assertHas("Converted to follow-up")
+
 
 REVIEWERS = ["reviewer-code", "reviewer-security", "reviewer-ux", "reviewer-ui"]
 
@@ -82,7 +85,7 @@ class Reviewers(AgentCase):
 
     def test_momus_checks_architecture_conventions(self):
         self.agent = "reviewer-code"
-        self.assertHas("docs/architecture.md", "polish")
+        self.assertHas("docs/architecture.md", "polish", "round N · polish")
 
     def test_clotho_walks_experiences(self):
         self.agent = "reviewer-ux"
@@ -136,6 +139,12 @@ class Approver(AgentCase):
 
     def test_never_merges(self):
         self.assertHas("never merge")
+
+    def test_accepts_converted_nits(self):
+        self.assertHas("Converted to follow-up")
+
+    def test_dedupe_without_search_index(self):
+        self.assertHas("--json number,title,body", "already has an `APPROVE — Homer` comment")
 
 
 if __name__ == "__main__":

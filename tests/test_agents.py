@@ -1,6 +1,6 @@
 import unittest
 
-from contract import AGENT_HEADINGS, read
+from contract import AGENT_HEADINGS, assert_no_rev1, read
 
 
 class AgentCase(unittest.TestCase):
@@ -48,6 +48,21 @@ class Builder(AgentCase):
 
     def test_gate_before_ready(self):
         self.assertHas("gh pr ready", "gh pr checks")
+
+    def test_task_issues(self):
+        self.assertHas("templates/github/pr.md", "Closes #", "comment on the task issue")
+
+    def test_fixes_every_nit(self):
+        self.assertHas("every `nit`", "fix commit", "Polish pass")
+
+    def test_architecture_departure_escalates(self):
+        self.assertHas("docs/architecture.md")
+
+    def test_keeps_pr1_fixes(self):
+        self.assertHas("## Known issues", "foundry:building")
+
+    def test_no_rev1_terms(self):
+        assert_no_rev1(self, read("agents/builder.md"), "builder")
 
 
 REVIEWERS = ["reviewer-code", "reviewer-security", "reviewer-ux", "reviewer-ui"]

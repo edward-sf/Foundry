@@ -8,6 +8,7 @@ from contract import (
     LABELS,
     REVIEW_VERDICTS,
     TARGET_PATHS,
+    ROOT,
     TITLE_FORMATS,
     assert_no_rev1,
     read,
@@ -16,12 +17,26 @@ from contract import (
 CONTRACT = "skills/factory/contract.md"
 
 TEMPLATE_FIELDS = {
-    "spec": [
-        "Milestone:", "Approved:", "## Technical design", "## Architecture decisions",
-        "Decided by:", "## Tasks", "Done-check:", "## Definitions of done", "AC:",
-        "## Design reference", "## Flags", "## Revisions",
+    "product": [
+        "## Vision", "## Goals", "## Non-goals", "## Anti-goals", "## Product constraints",
+        "Platforms:", "Distribution:", "Hosting and budget:", "Hard limits:",
+        "## Core experiences", "Who:", "Trigger:", "Journey:", "Success:",
+        "Failure moments:", "Not this:", "## Milestones", "## Decision log",
     ],
-    "build": ["Spec:", "## Tasks", "Deviations:", "Verified:", "## Gate", "## Review round"],
+    "architecture": [
+        "## Stack", "## Testing", "## CI", "## CD", "## Conventions", "## Decision log",
+        "Decided by: owner",
+    ],
+    "spec": [
+        "Milestone:", "Approved:", "## Technical design", "docs/architecture.md",
+        "## Experiences", "## Architecture decisions", "Decided by:", "## Tasks",
+        "NN.T · ", "## Definitions of done", "AC:", "Failure moment:",
+        "## Design reference", "Run:", "## Flags", "## Revisions",
+    ],
+    "build": [
+        "Spec:", "## Tasks", "Deviations:", "Verified:", "## Known issues", "## Gate",
+        "## Review round", "fix commit", "## Polish pass",
+    ],
 }
 
 
@@ -56,6 +71,17 @@ class Contract(unittest.TestCase):
             for field in fields:
                 with self.subTest(template=template, field=field):
                     self.assertIn(field, text)
+
+
+    def test_templates_have_no_rev1_terms(self):
+        for template in TEMPLATE_FIELDS:
+            path = f"skills/factory/templates/{template}.md"
+            assert_no_rev1(self, read(path), path)
+
+    def test_rev1_templates_deleted(self):
+        for name in ["roadmap", "milestone"]:
+            with self.subTest(template=name):
+                self.assertFalse((ROOT / f"skills/factory/templates/{name}.md").exists())
 
 
 if __name__ == "__main__":

@@ -1,11 +1,11 @@
 # Build: <milestone name>
 
-Spec: [<date>-<milestone-slug>](../specs/<date>-<milestone-slug>.md)
+Spec: [<date>-NN-<slug>](../specs/<date>-NN-<slug>.md)
 PR: <link>
 
 ## Tasks
 
-### Task 1: <name>
+### #<n> NN.T · <task>
 
 <What was done.>
 
@@ -24,4 +24,11 @@ CI: <result, or "no CI: local checks only">
 
 ## Review round 1
 
-<Per finding fixed: reviewer, finding, fix commit. Nits left open, and why.>
+<Every blocking finding and every nit, each with its fix commit:
+- [blocking|nit] <reviewer>: <finding> — fix commit <sha>
+Follow-ups are not fixed here; Homer opens them.>
+
+## Polish pass
+
+<Only if all reviewers passed with nits open. Each nit with its fix commit,
+then Momus's re-check result. Or "not needed".>

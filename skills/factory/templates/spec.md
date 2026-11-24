@@ -1,14 +1,23 @@
 # Spec: <milestone name>
 
-Milestone: [NN-<slug>](../milestones/NN-<slug>.md)
+Milestone: [NN · <name>](<GitHub Milestone link>)
 Approved:
 <!-- Hypatia sets this to YYYY-MM-DD when the owner approves. Empty = draft. -->
 
 ## Technical design
 
-<Components, data, interfaces. How the milestone works.>
+<Components, data, interfaces. How the milestone works. Cite
+`docs/architecture.md` for stack and conventions; never re-decide them here.>
+
+## Experiences
+
+<For each core experience in the Milestone's Serves line: how this design
+supports its journey, and which of its failure moments this milestone touches.>
 
 ## Architecture decisions
+
+<Decisions for this milestone only. Project-wide ones belong in
+docs/architecture.md.>
 
 ### <Decision>
 
@@ -19,15 +28,15 @@ Approved:
 
 ## Tasks
 
-### Task 1: <name>
+<In build order. Each is a GitHub issue created after the owner approves this
+spec; its body holds what to build and its Done-check:.>
 
-<What to build.>
-
-Done-check: <the command or test that shows this task is done>
+1. [#<n> NN.T · <task>](<issue link>)
 
 ## Definitions of done
 
 - AC: AC1 — Check: <named test, command, or observable behaviour>
+- Failure moment: <experience> / <failure moment> — Check: <named test or command>
 
 ## Design reference
 

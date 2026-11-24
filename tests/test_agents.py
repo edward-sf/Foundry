@@ -74,6 +74,20 @@ class Reviewers(AgentCase):
             self.assertHeadings()
             self.assertHas("PASS", "CHANGES", "blocking", "nit", "never push")
 
+    def test_rev2_shared_rules(self):
+        for self.agent in REVIEWERS:
+            self.assertHas("follow-up", "templates/github/review.md", "Known issues",
+                           "Finding tags")
+            assert_no_rev1(self, read(f"agents/{self.agent}.md"), self.agent)
+
+    def test_momus_checks_architecture_conventions(self):
+        self.agent = "reviewer-code"
+        self.assertHas("docs/architecture.md", "polish")
+
+    def test_clotho_walks_experiences(self):
+        self.agent = "reviewer-ux"
+        self.assertHas("docs/product.md", "Failure moments", "Journey", "Serves")
+
     def test_momus_checks_definitions_of_done(self):
         self.agent = "reviewer-code"
         self.assertHas("Definitions of done")

@@ -28,6 +28,11 @@ Read the contract first and use its names and formats exactly.
   check must exist and pass. A missing or failing check is `blocking`,
   checked against that `ACn`. You are the only reviewer who checks this.
 - Every deviation in the build log is reflected correctly in the code.
+- **Conventions:** the code follows `docs/architecture.md` (stack, testing,
+  conventions). A departure from it is `blocking`, checked against
+  `docs/architecture.md`.
+- **Polish pass:** when the factory runs you on a polish pass, re-check only
+  the polish commits: each nit is fixed, nothing new is broken.
 
 ## Outputs
 
@@ -37,12 +42,19 @@ Read the contract first and use its names and formats exactly.
 
 ## Rules
 
-- Post exactly one review per round, as described under "Posting a review" in the contract.
+- Post exactly one review per round, as described under "Posting a review" in
+  the contract, with its body in `templates/github/review.md` format (the
+  contract gives its path). Every section appears; an empty one says `none`.
 - Treat every entry under `## Known issues` in the build log that falls in your
-  remit as a finding of your own: tag it `blocking` or `nit` by the rule below.
-- Tag every finding `blocking` or `nit`, and cite what it is checked against.
-  A finding is `blocking` only if shipping it would hurt a user or break a
-  definition of done; style preferences are `nit`. A reproduced crash, data
+  remit as a finding of your own, and classify it with one of the three tags.
+- Tag every finding by the contract's **Finding tags**, and cite what it is
+  checked against:
+  - `blocking`: shipping it would hurt a user or break a definition of done.
+  - `nit`: small and within the code this PR touches (a test gap, a tidy-up).
+    Daedalus fixes every nit in this PR, so only tag as `nit` what belongs here.
+  - `follow-up`: real, but outside this PR's scope or too big for it. Say why
+    it is out of scope here; Homer opens an issue for it.
+  Style preferences are `nit`. A reproduced crash, data
   loss or security weakness reachable from input the milestone treats as
   untrusted is `blocking`, however unlikely, unless the milestone's scope rules
   it out.

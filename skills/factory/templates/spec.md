@@ -32,7 +32,12 @@ Done-check: <the command or test that shows this task is done>
 ## Design reference
 
 <Only when ui: yes. The design system, tokens or existing screens Lachesis
-checks against, and how to run the app. Write "none" if there is none.>
+checks against, or "none" if there is none.>
+
+Run: server: <start command> → <URL> | local: <commands to build and run it>
+<Only when ui: yes. `server:` for anything reviewed through a URL (the factory
+starts it); `local:` for anything run directly, such as a CLI, desktop app or
+library demo (each reviewer runs the commands in a temporary sandbox).>
 
 ## Flags
 

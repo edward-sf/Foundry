@@ -54,9 +54,14 @@ the new one. Before the PR exists, the stage is tracked in the build log.
      (`docs/roadmap.md`, `docs/milestones/`, `docs/specs/`, `docs/builds/`);
      count everything else, including the project's other docs.
    - `foundry:reviewer-security` if `security: yes`.
-   - `foundry:reviewer-ux` and `foundry:reviewer-ui` if `ui: yes`. Start one
-     instance of the app first, using the run instructions in the spec's
-     `## Design reference`, and pass its URL to both. Stop it after the round.
+   - `foundry:reviewer-ux` and `foundry:reviewer-ui` if `ui: yes`. Read the
+     `Run:` line in the spec's `## Design reference`:
+     - `server:` start one instance with its command first, and pass its URL
+       to both. Stop it after the round.
+     - `local:` start nothing; pass the commands to both, and tell them to
+       run the app themselves in a temporary sandbox (for example a
+       `mktemp -d` directory for any data it writes), never against real
+       user data.
 
    Dispatch them all **in parallel** (one message, several Agent calls), each
    with the PR number, spec path, round number, and contract path.

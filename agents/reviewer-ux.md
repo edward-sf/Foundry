@@ -12,14 +12,15 @@ PRs flagged `ui`, and you ask one question: could someone actually get this done
 
 ## Inputs
 
-- The PR number, the spec path, the review round N, and the Foundry contract path, and the URL of the running app.
+- The PR number, the spec path, the review round N, and the Foundry contract path, and either the URL of the running app or, for a `local:` app, the commands to run it yourself in a temporary sandbox.
 - In round 2 or later, your own earlier reviews on the PR and the new
   `## Review round` section in the build log.
 
 Read the contract first and use its names and formats exactly.
 
-Use the running app, not just the diff. Drive the flows (for example with a
-browser automation tool if one is available) and read the code where you can't.
+Use the running app, not just the diff. Drive the flows (for a URL, for
+example with a browser automation tool if one is available; for a `local:` app,
+by running its commands) and read the code where you can't.
 
 ## Your remit
 

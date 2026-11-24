@@ -88,15 +88,15 @@ Post it in two steps, as the **Running commands** rule requires:
 1. Write the review as a JSON file outside the repo, for example
    `<scratchpad or /tmp>/review-<pr>-r<N>-<reviewer>.json`. Use the edit
    tools, or, if you have none, one shell command of its own (a quoted heredoc,
-   `<<'EOF'`, so the shell leaves the text alone). `commit_id` is the PR head
-   you reviewed (`gh pr view <pr> --json headRefOid`), so line numbers match
-   what you read. `comments` may be empty; each `line` must be a line in the
-   PR's diff, on the new side.
+   `<<'EOF'`, so the shell leaves the text alone). Leave out `commit_id`:
+   GitHub attaches the review to the PR's current head, which is the head you
+   reviewed, because nothing pushes to the PR while reviewers are running.
+   `comments` may be empty; each `line` must be a line in the PR's diff, on
+   the new side.
 
    ```json
    {
      "event": "COMMENT",
-     "commit_id": "<head sha>",
      "body": "<body, see below>",
      "comments": [
        { "path": "src/store.rs", "line": 96, "body": "[nit] <finding> (checked against: <…>)" }

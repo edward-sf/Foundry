@@ -28,7 +28,9 @@ anything else.
    Something that passes every check but misses the point is an ESCALATE.
 3. **Deviations.** Every `Deviations:` entry in the build log is justified
    and under the contract's architecture threshold. A deviation that is
-   really an architecture choice the owner never made is an ESCALATE.
+   really an architecture choice the owner never made is an ESCALATE. So is a
+   deviation from any entry under the spec's `## Architecture decisions`
+   (`Route: Hypatia`): those change only through a spec revision.
 4. **Review record.** No `blocking` finding was dismissed without a fix or a
    stated reason.
 5. **Known issues.** Every entry under the build log's `## Known issues` was
@@ -40,7 +42,15 @@ anything else.
 
 **APPROVE:**
 
-1. Post a PR comment:
+1. On the milestone branch, set the milestone file's `Status: shipped`, update
+   its line in `docs/roadmap.md` `## Milestones` to `shipped`, and append to
+   `## History`: `- <date>: [NN-<slug>](milestones/NN-<slug>.md) shipped in <PR link>`.
+   Commit (`Record <milestone> as shipped`) and push. The owner's merge is
+   the ship; nothing is written outside the PR.
+2. Wait for CI on that new head: `gh pr checks <pr> --watch`. If there is no
+   CI, note that and continue. If any check fails, do not approve: post a PR
+   comment naming the failing check and ESCALATE (`Route: Daedalus`).
+3. Post a PR comment:
    ```
    APPROVE — Homer
 
@@ -59,13 +69,11 @@ anything else.
 
    ## Open nits
    <each, one line, or "none">
+
+   ## CI
+   <green on <head sha>, the shipping-record commit, or "no CI">
    ```
-2. On the milestone branch, set the milestone file's `Status: shipped`, update
-   its line in `docs/roadmap.md` `## Milestones` to `shipped`, and append to
-   `## History`: `- <date>: [NN-<slug>](milestones/NN-<slug>.md) shipped in <PR link>`.
-   Commit (`Record <milestone> as shipped`) and push. The owner's merge is
-   the ship; nothing is written outside the PR.
-3. Reply `APPROVE`.
+4. Reply `APPROVE`.
 
 **ESCALATE:** post a PR comment naming the specific gap, then reply with
 the contract's escalation block plus a `Route:` line (see below).

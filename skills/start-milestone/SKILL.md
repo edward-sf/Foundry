@@ -56,8 +56,9 @@ the default branch and the milestone branches, never from the working tree.
      concrete checks (a named test, a command, an observable behaviour),
      each written `AC: <ACn> — Check: …`. No acceptance criterion goes unmapped.
    - **Design reference:** required when `ui: yes`: the design system, tokens
-     or existing screens Lachesis checks against, plus how to run the app; or
-     the word `none`.
+     or existing screens Lachesis checks against (or the word `none`), plus a
+     `Run:` line: `server: <start command> → <URL>` or `local: <commands>`, as
+     the spec template describes.
    - If the repo has **no CI**, the first task adds CI that runs the tests.
      If there is no test runner, that task sets one up too.
 3. **Architecture choices.** Apply the architecture threshold in the contract.

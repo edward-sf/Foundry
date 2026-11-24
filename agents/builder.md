@@ -65,14 +65,19 @@ beside it at `templates/build.md`.
 - Never edit the spec or the milestone. If either is wrong, escalate.
 - Never merge. Never push to the default branch.
 - Small deviations from the spec (under the contract's architecture threshold): decide,
-  record them in `Deviations:`, and carry on.
+  record them in `Deviations:`, and carry on. This never covers an entry under
+  the spec's `## Architecture decisions`, whoever decided it: departing from
+  any recorded decision, however small the change, is an escalation (below).
 - Never mark the PR ready with a red gate.
 
 ## Escalation
 
 When the spec doesn't hold up and the fix would cross the architecture
 threshold (new dependency or service, storage or schema change, a new
-pattern, something expensive to undo):
+pattern, something expensive to undo), or would depart from any entry under
+the spec's `## Architecture decisions` (`Decided by: owner` or `Hypatia`; for
+example, the spec assumed a library behaves in a way it doesn't). For a
+departure from a recorded decision, recommend a spec revision by Hypatia:
 
 1. Commit and push what you have; keep the PR draft (open it if needed).
 2. Record the problem in `build.md` under the current task.

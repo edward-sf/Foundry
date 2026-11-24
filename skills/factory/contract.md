@@ -81,13 +81,34 @@ the stage label while waiting, and the escalation comment names the stage to ret
 
 Every agent acts through the owner's `gh` account, and GitHub does not let an
 account approve or request changes on its own PR. So every review is posted
-with event `COMMENT`, and the verdict lives in the body:
+with event `COMMENT`, and the verdict lives in the body.
 
-```
-gh api repos/{owner}/{repo}/pulls/<pr>/reviews \
-  -f event=COMMENT -f body="<body>" \
-  -F 'comments[][path]=<file>' -F 'comments[][line]=<n>' -F 'comments[][body]=<finding>'
-```
+Post it in two steps, as the **Running commands** rule requires:
+
+1. Write the review as a JSON file outside the repo, for example
+   `<scratchpad or /tmp>/review-<pr>-r<N>-<reviewer>.json`. Use the edit
+   tools, or, if you have none, one shell command of its own (a quoted heredoc,
+   `<<'EOF'`, so the shell leaves the text alone). `commit_id` is the PR head
+   you reviewed (`gh pr view <pr> --json headRefOid`), so line numbers match
+   what you read. `comments` may be empty; each `line` must be a line in the
+   PR's diff, on the new side.
+
+   ```json
+   {
+     "event": "COMMENT",
+     "commit_id": "<head sha>",
+     "body": "<body, see below>",
+     "comments": [
+       { "path": "src/store.rs", "line": 96, "body": "[nit] <finding> (checked against: <…>)" }
+     ]
+   }
+   ```
+
+2. Post it: `gh api repos/{owner}/{repo}/pulls/<pr>/reviews --input <file>`.
+
+Never build the review from `-f` / `-F` fields: gh groups `-f` and `-F`
+fields separately, so mixing them splits each inline comment apart (HTTP 422),
+and `-F` rewrites text that starts with `@` or looks like a number or boolean.
 
 Body format:
 

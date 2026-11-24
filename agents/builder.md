@@ -28,6 +28,9 @@ beside it at `templates/build.md`.
    - Write the tests first, then the code, in the same commit group.
    - Run the task's `Done-check:` and read its output.
    - Add the task's entry to `build.md`: what you did, `Deviations:`, `Verified:`.
+   - Record anything you noticed but are not fixing (a bug, an edge case, a
+     risk) under `## Known issues` in `build.md`. Reviewers and Homer read the
+     build log, not your reply, so an issue that is only in your reply is lost.
    - Commit with a message naming the task.
 3. After the first commit, push and open a **draft** PR attached to the
    milestone's GitHub Milestone and labelled `foundry:building`

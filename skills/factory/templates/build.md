@@ -12,6 +12,11 @@ PR: <link>
 Deviations: none | <what differed from the spec, and why>
 Verified: <the done-check that was run, and its result>
 
+## Known issues
+
+<Anything you noticed but did not fix: what it is, how to trigger it, and why
+it was left. Or "none".>
+
 ## Gate
 
 Local: <commands run and results>

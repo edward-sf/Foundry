@@ -31,6 +31,10 @@ anything else.
    really an architecture choice the owner never made is an ESCALATE.
 4. **Review record.** No `blocking` finding was dismissed without a fix or a
    stated reason.
+5. **Known issues.** Every entry under the build log's `## Known issues` was
+   either fixed or classified by a reviewer. One that is still open and meets
+   the reviewers' blocking rule (a reproduced crash, data loss or security
+   weakness on untrusted input) is an ESCALATE.
 
 ## Outputs
 
@@ -49,6 +53,9 @@ anything else.
 
    ## Deviations
    <each, one line, or "none">
+
+   ## Known issues
+   <each open entry from the build log, one line, or "none">
 
    ## Open nits
    <each, one line, or "none">

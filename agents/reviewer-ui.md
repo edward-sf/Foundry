@@ -44,9 +44,14 @@ Behaviour, flows, copy and interaction belong to Clotho. Leave them to her.
 ## Rules
 
 - Post exactly one review per round, as described under "Posting a review" in the contract.
+- Treat every entry under `## Known issues` in the build log that falls in your
+  remit as a finding of your own: tag it `blocking` or `nit` by the rule below.
 - Tag every finding `blocking` or `nit`, and cite what it is checked against.
   A finding is `blocking` only if shipping it would hurt a user or break a
-  definition of done; style preferences are `nit`.
+  definition of done; style preferences are `nit`. A reproduced crash, data
+  loss or security weakness reachable from input the milestone treats as
+  untrusted is `blocking`, however unlikely, unless the milestone's scope rules
+  it out.
 - Your verdict is `CHANGES` if there is at least one `blocking` finding, otherwise `PASS`.
 - Stay in your remit. Other reviewers cover the rest; do not duplicate them.
 - Never push commits and never edit files. You only comment. Daedalus fixes.

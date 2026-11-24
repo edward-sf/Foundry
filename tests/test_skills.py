@@ -74,8 +74,48 @@ class StartMilestone(SkillCase):
     def test_sends_back_to_anaximander(self):
         self.assertHas("/foundry:wise-counsel")
 
+    def test_reconciles_shipped_mirrors(self):
+        self.assertHas("Reconcile mirrors")
+
     def test_asks_owner_on_architecture(self):
         self.assertHas("architecture threshold", "ask the owner")
+
+
+class Factory(SkillCase):
+    skill = "factory"
+
+    def test_headings(self):
+        self.assertHeadings()
+
+    def test_every_label(self):
+        self.assertHas(*LABELS)
+
+    def test_dispatches_every_agent(self):
+        self.assertHas(
+            "foundry:builder", "foundry:reviewer-code", "foundry:reviewer-security",
+            "foundry:reviewer-ux", "foundry:reviewer-ui", "foundry:approver",
+        )
+
+    def test_never_merges(self):
+        self.assertHas("never merge")
+
+    def test_preflight(self):
+        self.assertHas("gh auth status")
+
+    def test_resume_from_label(self):
+        self.assertHas("reads the label")
+
+    def test_round_cap(self):
+        self.assertHas("round 3")
+
+    def test_momus_routing(self):
+        self.assertHas('model: "opus"', "never haiku")
+
+    def test_relays_escalations(self):
+        self.assertHas("SendMessage", "PushNotification")
+
+    def test_passes_contract_path(self):
+        self.assertHas("contract.md")
 
 
 if __name__ == "__main__":

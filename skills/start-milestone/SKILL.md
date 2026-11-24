@@ -21,6 +21,8 @@ anything else, and use its names and formats exactly. The spec template is
 
 ## Before you start
 
+0. **Reconcile mirrors.** Close any GitHub Milestone whose file says
+   `shipped` but is still open (the owner merged since the last run).
 1. **Single slot.** Look for any milestone with `Status: in-progress`.
    - If it is the milestone you were given (or no argument was given): this is
      a **resume**. If its spec has an `Approved:` date, hand straight to the

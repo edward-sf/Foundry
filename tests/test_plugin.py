@@ -19,7 +19,6 @@ class PluginManifest(unittest.TestCase):
                 self.assertEqual(fm.get("model"), model)
                 self.assertTrue(fm.get("description"))
 
-    @unittest.expectedFailure
     def test_skill_frontmatter(self):
         for skill in SKILLS:
             with self.subTest(skill=skill):
